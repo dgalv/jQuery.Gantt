@@ -47,7 +47,9 @@
             onAddClick: function (data) { return; },
             onRender: function() { return; },
             onDataLoadFailed: function(data) { return; },
-            scrollToToday: true
+            scrollToToday: true,
+	    tooltip: '',
+	    enableTooltip: true,
         };
 
         /**
@@ -949,24 +951,26 @@
                             width: ((cellWidth * days) - barMarg) + 2
                         })
                         .data("dataObj", dataObj);
-
-                if (desc) {
-                    bar
-                      .mouseover(function (e) {
-                          var hint = $('<div class="fn-gantt-hint" />').html(desc);
-                          $("body").append(hint);
-                          hint.css("left", e.pageX);
-                          hint.css("top", e.pageY);
-                          hint.show();
-                      })
-                      .mouseout(function () {
-                          $(".fn-gantt-hint").remove();
-                      })
-                      .mousemove(function (e) {
-                          $(".fn-gantt-hint").css("left", e.pageX);
-                          $(".fn-gantt-hint").css("top", e.pageY + 15);
-                      });
-                }
+		if(settings.enableTooltip) {
+		    var tooltipInner = settings.tooltip || desc;
+			if (tooltipInner) {
+			    bar
+			      .mouseover(function (e) {
+				  var hint = $('<div class="fn-gantt-hint" />').html(tooltipInner);
+				  $("body").append(hint);
+				  hint.css("left", e.pageX);
+				  hint.css("top", e.pageY);
+				  hint.show();
+			      })
+			      .mouseout(function () {
+				  $(".fn-gantt-hint").remove();
+			      })
+			      .mousemove(function (e) {
+				  $(".fn-gantt-hint").css("left", e.pageX);
+				  $(".fn-gantt-hint").css("top", e.pageY + 15);
+			      });
+			}
+		}
                 bar.click(function (e) {
                     e.stopPropagation();
                     settings.onItemClick($(this).data("dataObj"));
